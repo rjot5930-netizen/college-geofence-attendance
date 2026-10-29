@@ -1,1 +1,17 @@
+{% extends "base.html" %}
+{% block title %}Sign in{% endblock %}
+{% block content %}
+<div class="auth-layout">
+  <section class="auth-aside"><div class="eyebrow">WELCOME BACK</div><h1>Your campus,<br><span>in sync.</span></h1><p>Sign in to manage classes or check in for today's attendance.</p><div class="aside-stat"><div class="stat-symbol">✦</div><div><b>Every class, in one place</b><small>Secure access for teachers and students</small></div></div></section>
+  <section class="auth-card"><div class="card-kicker">ACCOUNT ACCESS</div><h2>Sign in</h2><p class="muted">Enter your account details to continue.</p>
+    <form method="post" class="form-stack">
+      <input type="hidden" name="_csrf" value="{{ csrf_token() }}">
+      <label>Email address<input type="email" name="email" autocomplete="email" placeholder="you@college.edu" required maxlength="254"></label>
+      <label>Password<input type="password" name="password" autocomplete="current-password" placeholder="Enter your password" required></label>
+      <button class="btn btn-primary btn-full" type="submit">Sign in <span>→</span></button>
+    </form>
+    <div class="auth-switch">New to CampusMark? <a href="{{ url_for('register') }}">Create an account</a></div>
+  </section>
+</div>
+{% endblock %}
 
