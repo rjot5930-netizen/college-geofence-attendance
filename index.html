@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}Welcome{% endblock %}
+{% block content %}
+<section class="hero">
+  <div class="hero-copy">
+    <div class="eyebrow"><span class="live-dot"></span> SMART CAMPUS · SIMPLE ATTENDANCE</div>
+    <h1>Attendance that<br><span>knows you're there.</span></h1>
+    <p class="hero-text">A smarter way to manage classroom attendance. Teachers set a campus boundary, students check in from the right place, and records stay organized.</p>
+    <div class="hero-buttons">
+      <a class="btn btn-primary btn-large" href="{{ url_for('login') }}">Sign in <span>→</span></a>
+      <a class="btn btn-secondary btn-large" href="{{ url_for('register') }}">Create an account</a>
+    </div>
+    <div class="trust-row"><span>✓</span> GPS radius verification <span>✓</span> Downloadable reports</div>
+  </div>
+  <div class="hero-visual">
+    <div class="glow"></div>
+    <div class="location-card">
+      <div class="map-top"><span class="map-pin">⌖</span><div><b>Campus boundary</b><small>Location verification</small></div><span class="status-pill">ACTIVE</span></div>
+      <div class="map-art">
+        <div class="map-grid"></div><div class="geo-ring ring-one"></div><div class="geo-ring ring-two"></div><div class="geo-ring ring-three"></div>
+        <div class="map-center"><span>⌖</span></div><div class="map-label">CLASSROOM ZONE</div>
+      </div>
+      <div class="location-bottom"><div><small>CHECK-IN STATUS</small><b><span class="green-dot"></span> Ready to verify</b></div><div class="accuracy"><small>RADIUS</small><b>100 m</b></div></div>
+    </div>
+    <div class="floating-chip"><span class="chip-check">✓</span><div><b>Location confirmed</b><small>Attendance secured</small></div></div>
+  </div>
+</section>
+<section class="feature-grid">
+  <article class="feature"><span class="feature-icon purple">⌖</span><h3>Location-aware</h3><p>Check-ins are validated against the teacher's saved class location.</p></article>
+  <article class="feature"><span class="feature-icon blue">▦</span><h3>One class code</h3><p>Students join the right class using a unique joining code.</p></article>
+  <article class="feature"><span class="feature-icon green">↧</span><h3>Reports ready</h3><p>Filter attendance by date and export an Excel workbook.</p></article>
+</section>
+{% endblock %}

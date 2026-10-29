@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}Student dashboard{% endblock %}
+{% block content %}
+<div class="dashboard-heading"><div><div class="eyebrow">STUDENT WORKSPACE</div><h1>Welcome, {{ session.get('name') }}</h1><p class="muted">Join your class and mark attendance from inside its location boundary.</p></div><div class="today-chip"><span class="green-dot"></span> {{ now if now is defined else 'Attendance portal' }}</div></div>
+<div class="student-top-grid">
+<section class="join-panel"><div class="feature-icon purple">＋</div><h2>Join a class</h2><p class="muted">Enter the unique code shared by your teacher.</p><form method="post" action="{{ url_for('join_class') }}" class="join-form"><input type="hidden" name="_csrf" value="{{ csrf_token() }}"><input name="code" placeholder="e.g. A1B2C3" maxlength="12" required><button class="btn btn-primary" type="submit">Join class →</button></form></section>
+<section class="student-tip"><div class="tip-icon">⌖</div><h3>Ready to check in?</h3><p>Allow location access when prompted. Your location is checked against the class boundary only when you press the attendance button.</p><div class="tip-line"><span class="green-dot"></span> Location checked at check-in</div></section>
+</div>
+<div class="section-heading"><div><h2>My classes</h2><p class="muted">Your enrolled classes and today's attendance check-in.</p></div></div>
+{% if classes %}
+<div class="student-class-grid">
+{% for cls in classes %}
+<article class="student-class-card"><div class="class-card-top"><div class="class-mark">⌖</div><span class="status-pill">{{ cls.radius_m }} M RADIUS</span></div><h3>{{ cls.name }}</h3><p class="muted small">Teacher: {{ cls.teacher_name }}</p><div class="student-class-details"><span>Code <b>{{ cls.code }}</b></span><span>Boundary <b>{{ cls.radius_m }} m</b></span></div>
+<form method="post" action="{{ url_for('mark_attendance') }}" class="mark-form" onsubmit="return captureStudentLocation(event, 'lat-{{ cls.id }}','lon-{{ cls.id }}','loc-{{ cls.id }}')">
+<input type="hidden" name="_csrf" value="{{ csrf_token() }}"><input type="hidden" name="class_id" value="{{ cls.id }}"><input type="hidden" name="latitude" id="lat-{{ cls.id }}"><input type="hidden" name="longitude" id="lon-{{ cls.id }}">
+<div id="loc-{{ cls.id }}" class="location-status">Location is only requested when you check in.</div><button class="btn btn-primary btn-full" type="submit">⌖ Mark attendance</button></form></article>
+{% endfor %}
+</div>
+{% else %}
+<div class="empty-state"><div class="empty-icon">⌖</div><h3>No classes joined yet</h3><p>Ask your teacher for the class joining code, then enter it above.</p></div>
+{% endif %}
+<section class="history-panel"><div class="section-heading"><div><h2>Recent attendance</h2><p class="muted">Your latest recorded check-ins.</p></div></div><div class="table-wrap"><table><thead><tr><th>Date</th><th>Class</th><th>Status</th><th>Distance</th><th>Time</th></tr></thead><tbody>
+{% for row in recent %}<tr><td>{{ row.attendance_date }}</td><td><b>{{ row.class_name }}</b></td><td><span class="attendance-status {{ 'present' if row.status == 'Present' else 'absent' }}">{{ row.status }}</span></td><td>{{ (row.distance_m|string + ' m') if row.distance_m is not none else '—' }}</td><td>{{ row.marked_at }}</td></tr>
+{% else %}<tr><td colspan="5" class="empty-cell">No attendance records yet.</td></tr>{% endfor %}
+</tbody></table></div></section>
+<script>
+function captureStudentLocation(event, latId, lonId, statusId) {
+ event.preventDefault();
+ const form = event.currentTarget, status = document.getElementById(statusId);
+ if (!navigator.geolocation) { status.textContent = 'Geolocation is not supported by this browser.'; return false; }
+ status.textContent = 'Checking your location…';
+ navigator.geolocation.getCurrentPosition(pos => {
+   document.getElementById(latId).value = pos.coords.latitude;
+   document.getElementById(lonId).value = pos.coords.longitude;
+   status.textContent = `Location captured (accuracy about ${Math.round(pos.coords.accuracy)} m). Submitting…`;
+   form.submit();
+ }, err => { status.textContent = 'Location unavailable. Allow location permission and try again.'; status.className = 'location-status error-text'; },
+ {enableHighAccuracy:true, timeout:15000, maximumAge:0});
+ return false;
+}
+</script>
+{% endblock %}

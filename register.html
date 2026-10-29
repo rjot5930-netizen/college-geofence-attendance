@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}Create account{% endblock %}
+{% block content %}
+<div class="auth-layout register-layout">
+  <section class="auth-aside"><div class="eyebrow">GET STARTED</div><h1>Make every<br><span>class count.</span></h1><p>Create your CampusMark account. Choose your role to get the right dashboard.</p><div class="role-preview"><div class="role-avatar">T</div><div><b>Teacher workspace</b><small>Create classes and manage attendance</small></div></div><div class="role-preview"><div class="role-avatar student-avatar">S</div><div><b>Student workspace</b><small>Join classes and check in by location</small></div></div></section>
+  <section class="auth-card"><div class="card-kicker">NEW ACCOUNT</div><h2>Create account</h2><p class="muted">It only takes a moment to get started.</p>
+    <form method="post" class="form-stack">
+      <input type="hidden" name="_csrf" value="{{ csrf_token() }}">
+      <label>I am registering as
+        <select name="role" required>
+          <option value="" disabled selected>Select your role</option>
+          <option value="teacher">Teacher</option>
+          <option value="student">Student</option>
+        </select>
+      </label>
+      <label>Full name<input type="text" name="name" autocomplete="name" placeholder="Your full name" required maxlength="100"></label>
+      <label>Email address<input type="email" name="email" autocomplete="email" placeholder="you@college.edu" required maxlength="254"></label>
+      <label>Password <span class="label-note">8+ characters</span><input type="password" name="password" autocomplete="new-password" placeholder="Create a strong password" required minlength="8"></label>
+      <button class="btn btn-primary btn-full" type="submit">Create account <span>→</span></button>
+    </form>
+    <div class="auth-switch">Already registered? <a href="{{ url_for('login') }}">Sign in</a></div>
+  </section>
+</div>
+{% endblock %}
