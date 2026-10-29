@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#111827">
+  <meta name="description" content="CampusMark — location-aware attendance for learning communities.">
+  <title>{% block title %}CampusMark{% endblock %} · CampusMark</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to content</a>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a class="brand" href="{{ url_for('index') }}" aria-label="CampusMark home">
+        <span class="brand-icon">C</span>
+        <span class="brand-name">Campus<span>Mark</span><small>SMART CAMPUS ATTENDANCE</small></span>
+      </a>
+      <nav class="top-actions" aria-label="Main navigation">
+        {% if session.get('user_id') %}
+          <span class="welcome"><span class="avatar">{{ (session.get('name') or 'U')[0]|upper }}</span><span>Hi, {{ session.get('name') }}<small>{{ session.get('role', '')|title }} workspace</small></span></span>
+          {% if session.get('role') == 'teacher' %}
+            <a class="nav-link" href="{{ url_for('manage_users') }}">Manage users</a>
+          {% endif %}
+          <form method="post" action="{{ url_for('logout') }}" class="inline-form">
+            <input type="hidden" name="_csrf" value="{{ csrf_token() }}">
+            <button class="btn btn-ghost btn-small" type="submit">Sign out ↗</button>
+          </form>
+        {% else %}
+          <a class="nav-link" href="{{ url_for('login') }}">Sign in</a>
+          <a class="btn btn-primary btn-small" href="{{ url_for('register') }}">Create account →</a>
+        {% endif %}
+      </nav>
+    </div>
+  </header>
+  <main class="page" id="main-content">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div class="flash-stack" role="status" aria-live="polite">
+        {% for category, message in messages %}
+          <div class="flash flash-{{ category }}">{{ message }}</div>
+        {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+    {% block content %}{% endblock %}
+  </main>
+  <footer class="footer">
+    <div class="footer-inner">
+      <a class="footer-brand" href="{{ url_for('index') }}"><span class="brand-icon">C</span> CampusMark</a>
+      <span>Location-aware attendance for learning communities</span>
+      <span>Built for smarter campuses</span>
+    </div>
+  </footer>
+</body>
+</html>
